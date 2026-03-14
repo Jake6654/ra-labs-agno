@@ -10,31 +10,33 @@ from app.workflows.browser_workflow import run_browser_workflow
 load_dotenv()
 
 
-# This agent is a simple UI-facing wrapper.
-# It receives a user request, runs the workflow, and returns the final result.
-workflow_runner_agent = Agent(
-    name="Workflow Runner Agent",
-    model=OpenAIChat(id="gpt-4o"),
-    instructions="""
-    You are the entry agent for a browser-search workflow.
-    Your role is to accept a user request and explain that the workflow result
-    will be returned by the backend workflow logic.
-    Keep responses short.
-    """,
-    markdown=True,
-)
-
-
-# This is a simple callable wrapper you can later expose through routes or tools.
-# For now, it shows how the typed request enters the workflow.
-def run_search(query: str, max_results: int = 5) -> dict:
+# This function is exposed to the agent as a callable tool.
+# It runs the full browser workflow and returns structured JSON.
+def run_search_workflow(query: str, max_results: int = 5) -> dict:
     request = SearchRequest(query=query, max_results=max_results)
     result = run_browser_workflow(request)
     return result.model_dump()
 
 
-# AgentOS runtime container.
-# This is what AgentOS UI connects to.
+# This UI-facing agent can trigger the workflow function.
+workflow_runner_agent = Agent(
+    name="Search Workflow Agent",
+    model=OpenAIChat(id="gpt-4o"),
+    tools=[run_search_workflow],
+    instructions="""
+    You are the entry agent for a multi-agent browser search workflow.
+
+    When the user asks to search, research, compare, or collect results,
+    call the run_search_workflow tool.
+
+    After calling the tool:
+    - present the final structured output clearly
+    - keep the answer concise
+    - mention the summary
+    """,
+    markdown=True,
+)
+
 agent_os = AgentOS(
     agents=[workflow_runner_agent],
     tracing=True,
