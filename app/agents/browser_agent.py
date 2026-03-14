@@ -7,7 +7,7 @@ from agno.tools.duckduckgo import DuckDuckGoTools
 # It uses a search tool to find candidate results related to the refined query.
 browser_agent = Agent(
     name="Browser Agent",
-    model=OpenAIChat(id="gpt-4o"),
+    model=OpenAIChat(id="gpt-5-mini"),
     tools=[DuckDuckGoTools()],
     instructions="""
     You are the browser agent.

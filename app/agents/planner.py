@@ -7,7 +7,7 @@ from agno.models.openai import OpenAIChat
 # and explains how the search should be performed.
 planner_agent = Agent(
     name="Planner Agent",
-    model=OpenAIChat(id="gpt-4o"),
+    model=OpenAIChat(id="gpt-5-mini"),
     instructions="""
     You are the planner agent in a multi-agent workflow.
 
