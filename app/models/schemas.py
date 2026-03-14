@@ -18,10 +18,7 @@ class SearchResult(BaseModel):
 
 
 # This model represents the planner's output.
-<<<<<<< HEAD
 # The planner can rewrite or refine the query before the browser agent uses it
-=======
->>>>>>> 3cfe33b (set up AgentOS project structure)
 class PlanOutput(BaseModel):
     original_query: str
     refined_query: str
