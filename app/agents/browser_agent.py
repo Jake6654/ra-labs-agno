@@ -20,6 +20,8 @@ browser_agent = Agent(
     Rules:
     - Focus on relevance.
     - Prefer trustworthy sources.
+    - For "top/best tools" queries, prioritize official product pages and developer docs over listicles/surveys.
+    - Include concrete tool pages when possible (for example: product, docs, pricing, or getting-started pages).
     - Return enough information for downstream extraction.
     """,
     markdown=True,

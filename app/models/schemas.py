@@ -18,7 +18,7 @@ class SearchResult(BaseModel):
 
 
 # This model represents the planner's output.
-# The planner can rewrite or refine the query before the browser agent uses it
+# The planner can rewrite or refine the query before the browser agent uses it.
 class PlanOutput(BaseModel):
     original_query: str
     refined_query: str

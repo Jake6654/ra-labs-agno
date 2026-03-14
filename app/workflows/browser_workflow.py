@@ -58,7 +58,7 @@ def looks_like_search_failure(text: str) -> bool:
     return any(marker in lowered for marker in failure_markers)
 
 
-# lightweight signal to check whether browser content contains actual web findings.
+# Lightweight signal to check whether browser content contains actual web findings.
 def estimate_url_count(text: str) -> int:
     return len(re.findall(r"https?://[^\s)]+", text))
 
@@ -68,7 +68,7 @@ def run_browser_with_fallback(request: SearchRequest, plan: PlanOutput) -> Brows
     candidate_queries = [
         plan.refined_query,
         request.query,
-        f"{request.query} tools comparison",
+        f"{request.query} overview",
     ]
 
     last_response_content = ""
@@ -93,7 +93,6 @@ def run_browser_with_fallback(request: SearchRequest, plan: PlanOutput) -> Brows
         failure_trace_detected = looks_like_search_failure(content)
         url_count = estimate_url_count(content)
 
-        # and only accept content when there is at least one URL to extract.
         if content.strip() and url_count > 0:
             attempt_status = "degraded" if failure_trace_detected else "success"
             log_step(
@@ -121,7 +120,6 @@ def run_browser_with_fallback(request: SearchRequest, plan: PlanOutput) -> Brows
             },
         )
 
-    # if every attempt failed, return explicit failure metadata.
     return BrowserRunOutcome(
         raw_text=last_response_content,
         status="failure",
@@ -160,8 +158,6 @@ def run_browser_workflow(request: SearchRequest) -> WorkflowOutput:
         },
     )
 
-    # stop early on hard browser failure instead of letting downstream
-    # agents synthesize low-trust results from error traces.
     if browser_outcome.status == "failure":
         total_latency = time.time() - workflow_start
         fallback_output = WorkflowOutput(
@@ -222,12 +218,11 @@ def run_browser_workflow(request: SearchRequest) -> WorkflowOutput:
     verified_results = [
         SearchResult(**item) for item in verifier_data.get("results", [])
     ]
-    
+
     deduped_results: list[SearchResult] = []
     seen_keys: set[str] = set()
     for item in verified_results:
         dedupe_key = (item.url or item.title).strip().lower()
-        # enforce unique results and honor max_results in final output.
         if not dedupe_key or dedupe_key in seen_keys:
             continue
         seen_keys.add(dedupe_key)

@@ -26,13 +26,16 @@ workflow_runner_agent = Agent(
     instructions="""
     You are the entry agent for a multi-agent browser search workflow.
 
-    When the user asks to search, research, compare, or collect results,
+    When the user asks to search, research, compare, explain, or collect results,
     call the run_search_workflow tool.
 
     After calling the tool:
-    - present the final structured output clearly
-    - keep the answer concise
-    - mention the summary
+    - present the structured results clearly
+    - mention the summary in a natural way
+    - adapt the final wording to the user's query
+    - do not force a ranking format unless the user explicitly requests ranking
+
+    Keep the answer concise and useful.
     """,
     markdown=True,
 )
