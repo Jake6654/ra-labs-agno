@@ -196,6 +196,11 @@ Key logged stages include:
 - total workflow latency
   
 ## Running the Project
+### Python Virtual Environment
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
 ### Install dependencies
 ```
 pip install -r requirements.txt
@@ -206,7 +211,7 @@ OPENAI_API_KEY=your_api_key_here
 ```
 Start AgentOS
 ```
-python agentos.py
+fastapi dev app/agentos.py
 ```
 Then open the AgentOS dashboard in your browser to interact with the agent.
 ### Example Queries
